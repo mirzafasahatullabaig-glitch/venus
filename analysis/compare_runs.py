@@ -125,6 +125,16 @@ def print_detail(rec: dict) -> None:
         print("  adaptation (last-turn vocab overlap with the other bot):")
         for b, v in m["adaptation"].items():
             print(f"    {b:5} {v}")
+    judge = rec.get("judge")
+    if judge:
+        print(f"  judge: converged={judge.get('converged')}"
+              f" led={judge.get('leader_heuristic')}"
+              f" declared_by={judge.get('declared_by')}")
+        mj = judge.get("model_judge", {})
+        if mj.get("verdict"):
+            v = mj["verdict"]
+            print(f"    model ({mj.get('model')}): converged={v.get('converged')}"
+                  f" leader={v.get('leader')} - {v.get('why')}")
     print("  transcript:")
     for t in rec.get("turns", []):
         head = t["text"].strip().replace("\n", " ")

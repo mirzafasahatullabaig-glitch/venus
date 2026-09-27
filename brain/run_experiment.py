@@ -15,6 +15,8 @@ import time
 from app.config import get_config, load_experiment
 from core.bot import Bot
 from core.conversation import run_conversation
+from services import judge as judge_service
+from services import run_logger
 from services.ollama_client import stream_chat
 from services.run_logger import RunLogger
 
@@ -91,6 +93,22 @@ def main() -> None:
     tag = "converged early" if transcript.converged else "hit turn limit"
     print(f"\n{DIM}--- done ({len(transcript.turns)} turns, {tag}) ---{RESET}")
     print(f"{DIM}saved: {path}{RESET}")
+
+    if exp.judge:
+        judge_model = exp.judge_model or bots[0].model
+        judgment = judge_service.judge_run(
+            turns=logger.turns,
+            task=exp.task,
+            converged=transcript.converged,
+            stop_marker=exp.stop_marker,
+            ollama_url=cfg.ollama_url,
+            model=judge_model,
+            num_ctx=cfg.num_ctx,
+        )
+        run_logger.append_judge(path.stem, judgment)
+        led = judgment.get("leader_heuristic")
+        print(f"{DIM}judge: converged={judgment['converged']} led={led}"
+              f" (model judge: {judge_model}){RESET}")
 
 
 if __name__ == "__main__":

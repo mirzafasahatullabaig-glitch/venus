@@ -9,6 +9,12 @@ turn_limit = 8
 # A bot ends the conversation early by including this exact token in a reply.
 stop_marker = "CONVERGED"
 
+# Optional judge pass appended to the saved run: a deterministic verdict always
+# (converged? who led by word share / who declared it?), plus a model verdict
+# when Ollama is up. Set judge_model to override (default: bot1's model).
+judge = true
+# judge_model = "qwen2.5:3b"
+
 [bots.bot1]
 model   = "llama3.2:3b"
 body    = "esp32"

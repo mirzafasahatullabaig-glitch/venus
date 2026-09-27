@@ -55,6 +55,8 @@ class Experiment:
     turn_limit: int
     stop_marker: str | None
     bots: dict[str, BotConfig]
+    judge: bool = False
+    judge_model: str | None = None  # None -> reuse bot1's model for the judge
 
 
 @lru_cache(maxsize=1)
@@ -104,4 +106,6 @@ def load_experiment(path: str | Path) -> Experiment:
         turn_limit=int(raw.get("turn_limit", 6)),
         stop_marker=raw.get("stop_marker"),
         bots=_bots_from(raw),
+        judge=bool(raw.get("judge", False)),
+        judge_model=raw.get("judge_model"),
     )

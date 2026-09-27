@@ -92,3 +92,15 @@ def read_run(name: str) -> dict:
     if not path.exists():
         raise FileNotFoundError(f"No such run: {safe}")
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def append_judge(name: str, judgment: dict) -> Path:
+    """Attach a judge verdict to a saved run file under the "judge" key."""
+    safe = Path(name).name
+    path = RUNS_DIR / f"{safe}.json"
+    if not path.exists():
+        raise FileNotFoundError(f"No such run: {safe}")
+    rec = json.loads(path.read_text(encoding="utf-8"))
+    rec["judge"] = judgment
+    path.write_text(json.dumps(rec, indent=2, ensure_ascii=False), encoding="utf-8")
+    return path

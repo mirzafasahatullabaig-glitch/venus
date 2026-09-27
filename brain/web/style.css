@@ -1,0 +1,85 @@
+:root {
+  --bg: #0f1115;
+  --panel: #171a21;
+  --edge: #262b36;
+  --ink: #e6e9ef;
+  --muted: #9aa4b2;
+  --bot1: #35c4d6;   /* ESP32 — cyan */
+  --bot2: #c98bff;   /* Pi — violet */
+  --accent: #6ea8fe;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 15px/1.55 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+
+header {
+  display: flex; flex-wrap: wrap; gap: 12px;
+  align-items: center; justify-content: space-between;
+  padding: 14px 20px; border-bottom: 1px solid var(--edge);
+}
+h1 { font-size: 18px; margin: 0; }
+h1 .sub { color: var(--muted); font-weight: 400; font-size: 13px; }
+h2 { font-size: 14px; margin: 0 0 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+
+.key-row { display: flex; align-items: center; gap: 8px; }
+.key-row label { color: var(--muted); font-size: 13px; }
+
+main {
+  max-width: 900px; margin: 0 auto; padding: 20px;
+  display: grid; gap: 16px;
+}
+
+.panel {
+  background: var(--panel); border: 1px solid var(--edge);
+  border-radius: 12px; padding: 16px;
+}
+
+label { display: block; font-size: 13px; color: var(--muted); margin: 8px 0 4px; }
+
+input, textarea {
+  width: 100%; background: #0d0f14; color: var(--ink);
+  border: 1px solid var(--edge); border-radius: 8px;
+  padding: 8px 10px; font: inherit; resize: vertical;
+}
+input[type="number"] { width: 100%; }
+
+.row { display: flex; gap: 12px; align-items: flex-end; margin-top: 10px; }
+.row > div { flex: 1; }
+
+details { margin-top: 10px; }
+summary { cursor: pointer; color: var(--muted); font-size: 13px; }
+
+button {
+  background: var(--accent); color: #0b0d12; border: 0;
+  border-radius: 8px; padding: 9px 16px; font-weight: 600; cursor: pointer;
+}
+button:disabled { opacity: .45; cursor: not-allowed; }
+button.ghost { background: transparent; color: var(--muted); border: 1px solid var(--edge); font-weight: 400; padding: 3px 10px; }
+
+.status { color: var(--muted); font-size: 13px; align-self: center; }
+
+.transcript { display: flex; flex-direction: column; gap: 12px; min-height: 60px; }
+.bubble {
+  border: 1px solid var(--edge); border-left-width: 4px;
+  border-radius: 8px; padding: 10px 12px; white-space: pre-wrap;
+}
+.bubble.bot1 { border-left-color: var(--bot1); }
+.bubble.bot2 { border-left-color: var(--bot2); }
+.bubble .who { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+.bubble.bot1 .who b { color: var(--bot1); }
+.bubble.bot2 .who b { color: var(--bot2); }
+.bubble .meta { float: right; color: var(--muted); font-size: 11px; }
+
+.err { color: #ff8b8b; }
+
+.runs { list-style: none; margin: 0; padding: 0; }
+.runs li { display: flex; justify-content: space-between; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--edge); font-size: 13px; }
+.runs li:last-child { border-bottom: 0; }
+.runs .name { color: var(--accent); cursor: pointer; }
+.runs .tag { color: var(--muted); }

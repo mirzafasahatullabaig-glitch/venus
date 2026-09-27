@@ -1,0 +1,26 @@
+# --- secrets & local config (never commit) ---
+brain/config.toml
+firmware/bot1_esp32/secrets.h
+device/bot2_pi/config.json
+
+# --- data, not code ---
+runs/*
+!runs/.gitkeep
+
+# --- build artifacts ---
+dist/
+build/*.build/
+build/*.dist/
+*.spec.bak
+
+# --- python ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# --- editor / os ---
+.vscode/*.log
+.DS_Store
+Thumbs.db

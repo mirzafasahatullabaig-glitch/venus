@@ -1,0 +1,4 @@
+fastapi
+uvicorn[standard]
+httpx
+tomli; python_version < "3.11"

@@ -1,0 +1,27 @@
+# Venus brain config — copy this file to config.toml and fill in your own values.
+# config.toml is gitignored; this .example template is committed.
+
+# API key the laptop app requires on every request (except /health).
+# Generate a long random string, e.g. in PowerShell:
+#   [Convert]::ToBase64String((1..32 | ForEach-Object { Get-Random -Max 256 }))
+api_key = "change-me"
+
+# Port the laptop app (the only exposed port) listens on.
+port = 8080
+
+# Ollama stays localhost-only. The brain talks to it here.
+ollama_url = "http://127.0.0.1:11434"
+
+# Context window per turn. 4096 keeps two 3B models resident in 8 GB VRAM.
+num_ctx = 4096
+
+# The two different minds. Different model families = different behaviour.
+[bots.bot1]
+model   = "llama3.2:3b"
+body    = "esp32"
+persona = "personas/bot1_esp32.txt"
+
+[bots.bot2]
+model   = "qwen2.5:3b"
+body    = "pi"
+persona = "personas/bot2_pi.txt"

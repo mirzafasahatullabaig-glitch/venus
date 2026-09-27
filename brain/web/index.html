@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Venus Cockpit</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Venus <span class="sub">— two embodied bots on a shared brain</span></h1>
+    <div class="key-row">
+      <label for="apikey">API key</label>
+      <input id="apikey" type="password" placeholder="paste config.toml api_key" />
+    </div>
+  </header>
+
+  <main>
+    <section class="panel controls">
+      <label for="task">Task</label>
+      <textarea id="task" rows="3" placeholder="What should the two bots collaborate on?">Design a cheap, low-power way to tell whether a houseplant needs watering, using only what an ESP32 can sense and what a Raspberry Pi can compute. Agree on one concrete design.</textarea>
+
+      <div class="row">
+        <div>
+          <label for="turns">Turn limit</label>
+          <input id="turns" type="number" min="1" max="50" value="8" />
+        </div>
+        <div>
+          <label for="marker">Stop marker</label>
+          <input id="marker" type="text" value="CONVERGED" />
+        </div>
+      </div>
+
+      <details>
+        <summary>Persona overrides (optional — blank uses the configured files)</summary>
+        <label for="p1">Bot 1 (ESP32)</label>
+        <textarea id="p1" rows="3" placeholder="leave blank to use personas/bot1_esp32.txt"></textarea>
+        <label for="p2">Bot 2 (Pi)</label>
+        <textarea id="p2" rows="3" placeholder="leave blank to use personas/bot2_pi.txt"></textarea>
+      </details>
+
+      <div class="row">
+        <button id="start">Start</button>
+        <button id="stop" disabled>Stop</button>
+        <span id="status" class="status"></span>
+      </div>
+    </section>
+
+    <section class="panel transcript-panel">
+      <h2>Conversation</h2>
+      <div id="transcript" class="transcript"></div>
+    </section>
+
+    <section class="panel runs-panel">
+      <h2>Past runs <button id="refresh" class="ghost">refresh</button></h2>
+      <ul id="runs" class="runs"></ul>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

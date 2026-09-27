@@ -1,0 +1,15 @@
+[Unit]
+Description=Venus Bot 2 relay (Pi body + ESP32 relay)
+After=network-online.target tailscaled.service
+Wants=network-online.target
+
+[Service]
+# Adjust User and paths to match where you copied device/bot2_pi/ on the Pi.
+User=pi
+WorkingDirectory=/home/pi/bot2_pi
+ExecStart=/home/pi/bot2_pi/.venv/bin/python /home/pi/bot2_pi/relay.py
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

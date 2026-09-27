@@ -15,6 +15,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
 from app.config import get_config
+from app.hub import hub
 from app.security import require_api_key
 from core.bot import Bot
 from core.conversation import stream_conversation
@@ -98,12 +99,17 @@ async def run(req: RunRequest) -> StreamingResponse:
                     )
                 elif ev["type"] == "done":
                     converged = ev["converged"]
+                hub.publish(ev)          # fan out to watching bodies
                 yield _sse(ev)
         except Exception as exc:  # surface Ollama/other errors to the page
-            yield _sse({"type": "error", "message": str(exc)})
+            err = {"type": "error", "message": str(exc)}
+            hub.publish(err)
+            yield _sse(err)
             return
         path = logger.save(converged=converged)
-        yield _sse({"type": "saved", "name": path.stem})
+        saved = {"type": "saved", "name": path.stem}
+        hub.publish(saved)
+        yield _sse(saved)
 
     return StreamingResponse(events(), media_type="text/event-stream")
 

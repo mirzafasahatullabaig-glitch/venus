@@ -1,0 +1,2 @@
+# The Pi's OWN dependency, kept apart from brain/requirements.txt.
+requests

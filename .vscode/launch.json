@@ -1,0 +1,24 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Venus: debug cockpit",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}\\brain\\serve.py",
+      "cwd": "${workspaceFolder}\\brain",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "Venus: debug experiment",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}\\brain\\run_experiment.py",
+      "args": ["experiments/example.toml"],
+      "cwd": "${workspaceFolder}\\brain",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    }
+  ]
+}

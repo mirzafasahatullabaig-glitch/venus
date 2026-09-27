@@ -1,0 +1,36 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Venus: run cockpit (dev)",
+      "type": "shell",
+      "command": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+      "args": ["serve.py"],
+      "options": { "cwd": "${workspaceFolder}\\brain" },
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      "label": "Venus: run experiment",
+      "type": "shell",
+      "command": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+      "args": ["run_experiment.py", "experiments/example.toml"],
+      "options": { "cwd": "${workspaceFolder}\\brain" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Venus: build venus.exe",
+      "type": "shell",
+      "command": "${workspaceFolder}\\.venv\\Scripts\\pyinstaller.exe",
+      "args": [
+        "build\\venus.spec",
+        "--distpath", "dist",
+        "--workpath", "build\\_work",
+        "--clean",
+        "--noconfirm"
+      ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    }
+  ]
+}

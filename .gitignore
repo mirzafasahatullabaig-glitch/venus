@@ -7,8 +7,9 @@ device/bot2_pi/config.json
 runs/*
 !runs/.gitkeep
 
-# --- build artifacts ---
+# --- build artifacts (keep build/venus.spec, ignore generated output) ---
 dist/
+build/_work/
 build/*.build/
 build/*.dist/
 *.spec.bak

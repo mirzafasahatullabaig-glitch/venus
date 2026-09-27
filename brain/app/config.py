@@ -5,6 +5,7 @@ object — no other module opens config.toml or knows where it lives.
 """
 from __future__ import annotations
 
+import sys
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
@@ -14,9 +15,15 @@ try:  # Python 3.11+ has tomllib in the stdlib
 except ModuleNotFoundError:  # pragma: no cover - py<3.11 fallback
     import tomli as _toml  # type: ignore[no-redef]
 
-# brain/app/config.py -> brain/ is two levels up. Everything is resolved from here.
+# brain/app/config.py -> brain/ is two levels up (the source tree).
 BRAIN_DIR = Path(__file__).resolve().parent.parent
-CONFIG_PATH = BRAIN_DIR / "config.toml"
+
+# When frozen by PyInstaller (--onefile), bundled assets (web/, personas/) are
+# extracted to sys._MEIPASS, and config.toml lives beside the .exe so the user
+# can edit it. In source runs, both are just the brain/ tree.
+_FROZEN = getattr(sys, "frozen", False)
+ASSET_DIR = Path(getattr(sys, "_MEIPASS", BRAIN_DIR)) if _FROZEN else BRAIN_DIR
+CONFIG_PATH = (Path(sys.executable).parent / "config.toml") if _FROZEN else (BRAIN_DIR / "config.toml")
 
 
 @dataclass(frozen=True)
@@ -26,7 +33,7 @@ class BotConfig:
     persona_path: str  # relative to BRAIN_DIR, e.g. "personas/bot1_esp32.txt"
 
     def read_persona(self) -> str:
-        return (BRAIN_DIR / self.persona_path).read_text(encoding="utf-8")
+        return (ASSET_DIR / self.persona_path).read_text(encoding="utf-8")
 
 
 @dataclass(frozen=True)

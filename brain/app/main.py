@@ -10,7 +10,7 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
-from app.config import BRAIN_DIR
+from app.config import ASSET_DIR
 from app.routes import health, run, turn
 
 app = FastAPI(title="Venus brain", version="0.1.0")
@@ -21,6 +21,6 @@ app.include_router(turn.router)
 app.include_router(run.router)
 
 # The cockpit UI at "/". Mounted last so it doesn't shadow the API routes.
-WEB_DIR = BRAIN_DIR / "web"
+WEB_DIR = ASSET_DIR / "web"
 if WEB_DIR.is_dir():
     app.mount("/", StaticFiles(directory=str(WEB_DIR), html=True), name="web")

@@ -34,5 +34,38 @@ Copy-Item brain\config.example.toml brain\config.toml
 
 ## Running
 
-Comes online in Phase 1 (`/health`, `/turn`) and Phase 4 (the cockpit at `/`).
-See PLAN.md for each phase's "Done when" check.
+**From source (dev):**
+
+```powershell
+cd F:\venus\brain
+..\.venv\Scripts\python.exe serve.py                 # cockpit at http://127.0.0.1:8080
+..\.venv\Scripts\python.exe run_experiment.py experiments/example.toml
+```
+
+Or use the VS Code tasks (Terminal → Run Task → "Venus: …").
+
+## Building venus.exe
+
+```powershell
+.\.venv\Scripts\pip install pyinstaller
+.\.venv\Scripts\pyinstaller.exe build\venus.spec --distpath dist --workpath build\_work --clean --noconfirm
+```
+
+Output is `dist\venus.exe` (~14 MB, one file). On first launch it writes a
+`config.toml` next to itself from the bundled template, then asks you to set a
+real `api_key` and relaunch. `web/` and `personas/` are baked into the exe;
+`config.toml` stays beside it so you can edit it without rebuilding.
+
+### Unblocking the unsigned exe (Windows Defender / SmartScreen)
+
+The exe is unsigned, so Windows may warn on first run:
+
+- **SmartScreen** ("Windows protected your PC"): click **More info → Run anyway**.
+- **"Downloaded from the internet" block**: right-click `venus.exe` →
+  **Properties** → tick **Unblock** → **OK**. Or in PowerShell:
+  ```powershell
+  Unblock-File .\dist\venus.exe
+  ```
+- If Defender quarantines it, add an exclusion for the folder
+  (Windows Security → Virus & threat protection → Manage settings → Exclusions),
+  or run from source instead.

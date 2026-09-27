@@ -1,0 +1,18 @@
+# Separates MODEL from ROLE. Same task and personas as example.toml, but the two
+# models are swapped between the roles: qwen drives the proposer, llama the critic.
+# Only variable changed vs example.toml: which model sits in which role.
+# Question: does behaviour follow the model or the persona/role?
+
+task = "Design a cheap, low-power way to tell whether a houseplant needs watering, using only what an ESP32 can sense and what a Raspberry Pi can compute. Agree on one concrete design."
+turn_limit = 8
+stop_marker = "CONVERGED"
+
+[bots.bot1]
+model   = "qwen2.5:3b"
+body    = "esp32"
+persona = "personas/bot1_esp32.txt"
+
+[bots.bot2]
+model   = "llama3.2:3b"
+body    = "pi"
+persona = "personas/bot2_pi.txt"

@@ -1,0 +1,18 @@
+# CONTROL: identical minds. Same task and personas as example.toml, but BOTH bots
+# run llama3.2:3b. Only variable changed vs example.toml: bot2's model.
+# Question: do two copies of the same model converge differently than two
+# different models? (baseline for "different minds" claims)
+
+task = "Design a cheap, low-power way to tell whether a houseplant needs watering, using only what an ESP32 can sense and what a Raspberry Pi can compute. Agree on one concrete design."
+turn_limit = 8
+stop_marker = "CONVERGED"
+
+[bots.bot1]
+model   = "llama3.2:3b"
+body    = "esp32"
+persona = "personas/bot1_esp32.txt"
+
+[bots.bot2]
+model   = "llama3.2:3b"
+body    = "pi"
+persona = "personas/bot2_pi.txt"

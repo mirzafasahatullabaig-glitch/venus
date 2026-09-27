@@ -39,6 +39,7 @@ class BotConfig:
 @dataclass(frozen=True)
 class Config:
     api_key: str
+    host: str
     port: int
     ollama_url: str
     num_ctx: int
@@ -70,6 +71,7 @@ def get_config() -> Config:
 
     return Config(
         api_key=raw["api_key"],
+        host=raw.get("host", "127.0.0.1"),
         port=int(raw.get("port", 8080)),
         ollama_url=raw.get("ollama_url", "http://127.0.0.1:11434"),
         num_ctx=int(raw.get("num_ctx", 4096)),

@@ -40,8 +40,11 @@ def main() -> int:
     from app.main import app
 
     cfg = get_config()
-    print(f"Venus cockpit -> http://127.0.0.1:{cfg.port}")
-    uvicorn.run(app, host="127.0.0.1", port=cfg.port, log_level="info")
+    shown = "127.0.0.1" if cfg.host in ("0.0.0.0", "") else cfg.host
+    print(f"Venus cockpit -> http://{shown}:{cfg.port}")
+    if cfg.host not in ("127.0.0.1", "localhost"):
+        print(f"(listening on {cfg.host}:{cfg.port} - reachable over the tailnet)")
+    uvicorn.run(app, host=cfg.host or "127.0.0.1", port=cfg.port, log_level="info")
     return 0
 
 

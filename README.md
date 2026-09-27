@@ -44,6 +44,11 @@ cd F:\venus\brain
 
 Or use the VS Code tasks (Terminal → Run Task → "Venus: …").
 
+By default the brain binds `127.0.0.1` (localhost only). To let the Pi and other
+devices reach it over the tailnet, set `host` in `config.toml` to the laptop's
+tailnet IP (e.g. `100.76.45.98`) or `0.0.0.0`, then relaunch. Ollama stays
+localhost-only; only this app port is exposed, and it requires the API key.
+
 ## Building venus.exe
 
 ```powershell

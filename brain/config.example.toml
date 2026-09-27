@@ -6,6 +6,12 @@
 #   [Convert]::ToBase64String((1..32 | ForEach-Object { Get-Random -Max 256 }))
 api_key = "change-me"
 
+# Address the laptop app binds to. Default 127.0.0.1 (localhost only).
+# To let the Pi/devices reach the brain over the tailnet, set this to the
+# laptop's tailnet IP (e.g. "100.76.45.98") or "0.0.0.0" for all interfaces.
+# Ollama stays localhost-only regardless; only this app port is exposed.
+host = "127.0.0.1"
+
 # Port the laptop app (the only exposed port) listens on.
 port = 8080
 

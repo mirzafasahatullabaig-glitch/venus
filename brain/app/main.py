@@ -13,7 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from app.config import ASSET_DIR
 from app.routes import health, run, turn, watch
 
-app = FastAPI(title="Venus brain", version="0.1.0")
+app = FastAPI(title="Venus brain", version="1.0.0")
 
 # API routes first — they take precedence over the "/" static mount below.
 app.include_router(health.router)

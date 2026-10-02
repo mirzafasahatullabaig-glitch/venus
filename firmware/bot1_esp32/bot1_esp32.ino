@@ -53,9 +53,27 @@ String jsonStr(const String &body, const char *key) {
   if (k < 0) return "";
   int c = body.indexOf(':', k);
   int q1 = body.indexOf('"', c + 1);
-  int q2 = body.indexOf('"', q1 + 1);
-  if (q1 < 0 || q2 < 0) return "";
-  return body.substring(q1 + 1, q2);
+  if (q1 < 0) return "";
+  // Walk to the closing quote, skipping escaped quotes (\").
+  int i = q1 + 1;
+  String out = "";
+  while (i < (int)body.length()) {
+    char ch = body[i];
+    if (ch == '\\' && i + 1 < (int)body.length()) {
+      char n = body[i + 1];
+      if (n == 'n') out += '\n';
+      else if (n == 't') out += '\t';
+      else if (n == 'r') { /* drop */ }
+      else out += n;             // \" \\ and others -> literal char
+      i += 2;
+    } else if (ch == '"') {
+      break;                      // closing quote
+    } else {
+      out += ch;
+      i++;
+    }
+  }
+  return out;
 }
 
 void pollLatest() {

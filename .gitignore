@@ -6,6 +6,8 @@ device/bot2_pi/config.json
 # --- data, not code ---
 runs/*
 !runs/.gitkeep
+memory/*
+!memory/.gitkeep
 
 # --- build artifacts (keep build/venus.spec, ignore generated output) ---
 dist/

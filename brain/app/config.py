@@ -37,6 +37,17 @@ class BotConfig:
 
 
 @dataclass(frozen=True)
+class MemoryConfig:
+    """Cross-run memory: whether bots recall earlier conversations, how many
+    summaries to recall, and whether to spend a model call distilling each one
+    (False => store a trimmed last-turn snippet instead)."""
+
+    enabled: bool = True
+    recall_limit: int = 3
+    summarize: bool = True
+
+
+@dataclass(frozen=True)
 class Config:
     api_key: str
     host: str
@@ -44,6 +55,7 @@ class Config:
     ollama_url: str
     num_ctx: int
     bots: dict[str, BotConfig]
+    memory: MemoryConfig = MemoryConfig()
 
 
 @dataclass(frozen=True)
@@ -78,6 +90,16 @@ def get_config() -> Config:
         ollama_url=raw.get("ollama_url", "http://127.0.0.1:11434"),
         num_ctx=int(raw.get("num_ctx", 4096)),
         bots=_bots_from(raw),
+        memory=_memory_from(raw),
+    )
+
+
+def _memory_from(raw: dict) -> MemoryConfig:
+    m = raw.get("memory", {})
+    return MemoryConfig(
+        enabled=bool(m.get("enabled", True)),
+        recall_limit=int(m.get("recall_limit", 3)),
+        summarize=bool(m.get("summarize", True)),
     )
 
 

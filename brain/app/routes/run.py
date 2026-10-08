@@ -20,7 +20,8 @@ from app.security import require_api_key
 from core.bot import Bot
 from core.conversation import stream_conversation
 from services.ollama_client import stream_chat
-from services import run_logger
+from services import memory_store, run_logger
+from services.summarizer import snippet_of, summarise_bot
 
 router = APIRouter(dependencies=[Depends(require_api_key)])
 
@@ -60,6 +61,20 @@ async def run(req: RunRequest) -> StreamingResponse:
         task=req.task, turn_limit=req.turn_limit, stop_marker=req.stop_marker
     )
 
+    # Read seam: each bot's system prompt is its persona plus a recall block of
+    # what it concluded in earlier runs. recall() returns "" for a bot with no
+    # memory (or when memory is disabled), so a fresh bot's prompt is unchanged.
+    mem = cfg.memory
+    recalled = {
+        b.name: (memory_store.recall(b.name, limit=mem.recall_limit) if mem.enabled else "")
+        for b in bots
+    }
+    recalled_count = sum(1 for v in recalled.values() if v)
+
+    def system_for(bot: Bot) -> str:
+        block = recalled.get(bot.name, "")
+        return f"{bot.persona}\n\n{block}" if block else bot.persona
+
     # Per-turn scratch, filled by token_stream and read on turn_end for logging.
     current = {"t0": 0.0, "stats": {}}
 
@@ -69,7 +84,7 @@ async def run(req: RunRequest) -> StreamingResponse:
         return stream_chat(
             ollama_url=cfg.ollama_url,
             model=bot.model,
-            system=bot.persona,
+            system=system_for(bot),
             messages=messages,
             num_ctx=cfg.num_ctx,
             on_stats=current["stats"].update,
@@ -78,6 +93,11 @@ async def run(req: RunRequest) -> StreamingResponse:
     async def events() -> AsyncIterator[str]:
         bot_by_name = {b.name: b for b in bots}
         converged = False
+        if recalled_count:
+            rec_ev = {"type": "recalled", "count": recalled_count,
+                      "limit": mem.recall_limit}
+            hub.publish(rec_ev)
+            yield _sse(rec_ev)
         try:
             async for ev in stream_conversation(
                 task=req.task,
@@ -110,6 +130,31 @@ async def run(req: RunRequest) -> StreamingResponse:
         saved = {"type": "saved", "name": path.stem}
         hub.publish(saved)
         yield _sse(saved)
+
+        # Write seam: distil this run into a one-sentence memory per bot so the
+        # next run can recall it. Never let memory failure break a completed run.
+        if mem.enabled:
+            try:
+                stored = 0
+                for bot in bots:
+                    if mem.summarize:
+                        summary = await summarise_bot(
+                            turns=logger.turns, bot=bot.name, task=req.task,
+                            ollama_url=cfg.ollama_url, model=bot.model,
+                            num_ctx=cfg.num_ctx,
+                        )
+                    else:
+                        summary = snippet_of(logger.turns, bot.name)
+                    if summary:
+                        memory_store.remember(
+                            bot.name, run=path.stem, task=req.task, summary=summary
+                        )
+                        stored += 1
+                remembered = {"type": "remembered", "count": stored}
+                hub.publish(remembered)
+                yield _sse(remembered)
+            except Exception as exc:  # memory is best-effort, never fatal
+                yield _sse({"type": "memory_error", "message": str(exc)})
 
     return StreamingResponse(events(), media_type="text/event-stream")
 

@@ -21,6 +21,15 @@ ollama_url = "http://127.0.0.1:11434"
 # Context window per turn. 4096 keeps two 3B models resident in 8 GB VRAM.
 num_ctx = 4096
 
+# Cross-run memory: each bot recalls what it concluded in earlier conversations.
+# Recalled summaries are appended to that bot's system prompt at the start of a
+# new run. Set enabled = false for a clean A/B against memory-off runs.
+[memory]
+enabled      = true   # false => bots are amnesiac, exactly as in v1.0
+recall_limit = 3      # how many recent summaries to inject (keeps num_ctx safe)
+summarize    = true   # true => one model call distils each run into a sentence;
+                      # false => store a trimmed last-turn snippet (no extra call)
+
 # The two different minds. Different model families = different behaviour.
 [bots.bot1]
 model   = "llama3.2:3b"
